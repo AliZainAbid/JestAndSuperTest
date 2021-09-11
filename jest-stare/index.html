@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>jest-stare!</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="css/diff2html.min.css" rel="stylesheet" type="text/css">
+    <link href="css/jest-stare.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/holder.js"></script>
+    <script src="js/diff2html.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/view.js"></script>
+</head>
+
+<body>
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" id="navbar-title" href="#">jest-stare</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="coverage-link" class="nav-link disabled" href="#">Coverage</a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="onoff-switch mr-sm-2 ml-sm-2">
+                            <input type="checkbox" name="off-switch" class="off-switch-checkbox" id="lab-passoff-switch" checked>
+                            <label class="onoff-switch-label" for="lab-passoff-switch">
+                                <span class="pass off-switch-inner"></span>
+                                <span class="off-switch-switch"></span>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="onoff-switch mr-sm-2 ml-sm-2">
+                            <input type="checkbox" name="off-switch" class="off-switch-checkbox" id="lab-failoff-switch" checked>
+                            <label class="onoff-switch-label" for="lab-failoff-switch">
+                                <span class="fail off-switch-inner"></span>
+                                <span class="off-switch-switch"></span>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="onoff-switch mr-sm-2 ml-sm-2">
+                            <input type="checkbox" name="off-switch" class="off-switch-checkbox" id="lab-pendingoff-switch" checked>
+                            <label class="onoff-switch-label" for="lab-pendingoff-switch">
+                                <span class="pending off-switch-inner"></span>
+                                <span class="off-switch-switch"></span>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="onoff-switch mr-sm-2 ml-sm-2">
+                            <input type="checkbox" name="off-switch" class="off-switch-checkbox" id="lab-todooff-switch" checked>
+                            <label class="onoff-switch-label" for="lab-todooff-switch">
+                                <span class="todo off-switch-inner"></span>
+                                <span class="off-switch-switch"></span>
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+                <!-- <form class="form-inline mt-2 mt-md-0">
+                    <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" disabled>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit" disabled>Search</button>
+                </form> -->
+            </div>
+        </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main role="main" class="container">
+
+        <h1 class="mt-5"></h1>
+
+        <!-- Three columns of text below the carousel -->
+        <div class="row">
+            <div class="col-lg-4">
+                <canvas id="test-suites-canvas" width="100" height="100"></canvas>
+                <h2>Test Suites</h2>
+                <div class="list-group">
+                    <p id="test-suites-results" class="list-group-item list-group-item-action">4 passed, 6 total</p>
+                </div>
+            </div>
+            <!-- /.col-lg-4 -->
+            <div class="col-lg-4">
+                <canvas id="tests-canvas" width="100" height="100"></canvas>
+                <h2>Tests</h2>
+                <div class="list-group">
+                    <p id="tests-results" class="list-group-item list-group-item-action">7 passed, 13 total</p>
+                </div>
+            </div>
+            <!-- /.col-lg-4 -->
+            <div class="col-lg-4" id="snapshots-group">
+                <canvas id="snapshots-canvas" width="100" height="100"></canvas>
+                <h2>Snapshots</h2>
+                <div class="list-group">
+                    <p id="snapshots-results" class="list-group-item list-group-item-action">0 passed, 0 total</p>
+                </div>
+            </div>
+            <!-- /.col-lg-4 -->
+        </div>
+
+        <div id="loading-info" class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+                aria-valuemax="100" style="width: 100%"></div>
+        </div>
+
+        <div class="d-none" id="test-summary"></div>
+        <div class="d-none" id="test-config">{
+  &quot;additionalResultsProcessors&quot;: [],
+  &quot;resultDir&quot;: &quot;.&#x2F;jest-stare&#x2F;&quot;,
+  &quot;resultHtml&quot;: &quot;index.html&quot;,
+  &quot;resultJson&quot;: &quot;jest-results.json&quot;
+}</div>
+        <div id="accordion">
+            <div class="d-none" id="test-results">{
+  &quot;numFailedTestSuites&quot;: 2,
+  &quot;numFailedTests&quot;: 6,
+  &quot;numPassedTestSuites&quot;: 4,
+  &quot;numPassedTests&quot;: 7,
+  &quot;numPendingTestSuites&quot;: 0,
+  &quot;numPendingTests&quot;: 0,
+  &quot;numRuntimeErrorTestSuites&quot;: 0,
+  &quot;numTodoTests&quot;: 0,
+  &quot;numTotalTestSuites&quot;: 6,
+  &quot;numTotalTests&quot;: 13,
+  &quot;openHandles&quot;: [],
+  &quot;snapshot&quot;: {
+    &quot;added&quot;: 0,
+    &quot;didUpdate&quot;: false,
+    &quot;failure&quot;: false,
+    &quot;filesAdded&quot;: 0,
+    &quot;filesRemoved&quot;: 0,
+    &quot;filesRemovedList&quot;: [],
+    &quot;filesUnmatched&quot;: 0,
+    &quot;filesUpdated&quot;: 0,
+    &quot;matched&quot;: 0,
+    &quot;total&quot;: 0,
+    &quot;unchecked&quot;: 0,
+    &quot;uncheckedKeysByFile&quot;: [],
+    &quot;unmatched&quot;: 0,
+    &quot;updated&quot;: 0
+  },
+  &quot;startTime&quot;: 1631362109428,
+  &quot;success&quot;: false,
+  &quot;testResults&quot;: [
+    {
+      &quot;leaks&quot;: false,
+      &quot;numFailingTests&quot;: 0,
+      &quot;numPassingTests&quot;: 1,
+      &quot;numPendingTests&quot;: 0,
+      &quot;numTodoTests&quot;: 0,
+      &quot;openHandles&quot;: [],
+      &quot;perfStats&quot;: {
+        &quot;end&quot;: 1631362120159,
+        &quot;runtime&quot;: 4131,
+        &quot;slow&quot;: false,
+        &quot;start&quot;: 1631362116028
+      },
+      &quot;skipped&quot;: false,
+      &quot;snapshot&quot;: {
+        &quot;added&quot;: 0,
+        &quot;fileDeleted&quot;: false,
+        &quot;matched&quot;: 0,
+        &quot;unchecked&quot;: 0,
+        &quot;unmatched&quot;: 0,
+        &quot;updated&quot;: 0,
+        &quot;uncheckedKeys&quot;: []
+      },
+      &quot;testFilePath&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\26feb.test.js&quot;,
+      &quot;testResults&quot;: [
+        {
+          &quot;ancestorTitles&quot;: [],
+          &quot;duration&quot;: 78,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;today is friday: &quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;passed&quot;,
+          &quot;title&quot;: &quot;today is friday: &quot;
+        }
+      ],
+      &quot;failureMessage&quot;: null
+    },
+    {
+      &quot;leaks&quot;: false,
+      &quot;numFailingTests&quot;: 1,
+      &quot;numPassingTests&quot;: 1,
+      &quot;numPendingTests&quot;: 0,
+      &quot;numTodoTests&quot;: 0,
+      &quot;openHandles&quot;: [],
+      &quot;perfStats&quot;: {
+        &quot;end&quot;: 1631362124323,
+        &quot;runtime&quot;: 3701,
+        &quot;slow&quot;: false,
+        &quot;start&quot;: 1631362120622
+      },
+      &quot;skipped&quot;: false,
+      &quot;snapshot&quot;: {
+        &quot;added&quot;: 0,
+        &quot;fileDeleted&quot;: false,
+        &quot;matched&quot;: 0,
+        &quot;unchecked&quot;: 0,
+        &quot;unmatched&quot;: 0,
+        &quot;updated&quot;: 0,
+        &quot;uncheckedKeys&quot;: []
+      },
+      &quot;testFilePath&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getAndPostLocal.test.js&quot;,
+      &quot;testResults&quot;: [
+        {
+          &quot;ancestorTitles&quot;: [],
+          &quot;duration&quot;: 9,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;Nothing to worry about it for now &quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;passed&quot;,
+          &quot;title&quot;: &quot;Nothing to worry about it for now &quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;GET all user details&quot;
+          ],
+          &quot;duration&quot;: 1897,
+          &quot;failureDetails&quot;: [
+            {
+              &quot;actual&quot;: &quot;&quot;,
+              &quot;error&quot;: {},
+              &quot;expected&quot;: &quot;&quot;,
+              &quot;matcherName&quot;: &quot;&quot;,
+              &quot;message&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;&quot;,
+              &quot;passed&quot;: false,
+              &quot;stack&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getAndPostLocal.test.js:24:36)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+            }
+          ],
+          &quot;failureMessages&quot;: [
+            &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getAndPostLocal.test.js:24:36)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+          ],
+          &quot;fullName&quot;: &quot;GET all user details GET user output&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;title&quot;: &quot;GET user output&quot;
+        }
+      ],
+      &quot;failureMessage&quot;: &quot;\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mGET all user details › GET user output\u001b[39m\u001b[22m\n\n    expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 22 |\u001b[39m          \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m&#x60;cars&#x60;\u001b[39m) \u001b[90m&#x2F;&#x2F;get() of supertest\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 23 |\u001b[39m                                   \u001b[90m&#x2F;&#x2F;.set(&#39;Authorization&#39;, &#x60;Token ${request.token}&#x60;) \u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m&gt;\u001b[22m\u001b[2m\u001b[39m\u001b[90m 24 |\u001b[39m                                   \u001b[33m.\u001b[39mexpect(\u001b[35m200\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m                                    \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 25 |\u001b[39m                                   \u001b[33m.\u001b[39mthen((response) \u001b[33m&#x3D;&gt;\u001b[39m{\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 26 |\u001b[39m                                   console\u001b[33m.\u001b[39mlog(\u001b[32m\&quot;GET RESPONSE : \&quot;\u001b[39m\u001b[33m,\u001b[39m response\u001b[33m.\u001b[39mbody)\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 27 |\u001b[39m                                   done()\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.&lt;anonymous&gt; (\u001b[22m\u001b[2m\u001b[0m\u001b[36m__test__&#x2F;getAndPostLocal.test.js\u001b[39m\u001b[0m\u001b[2m:24:36)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertStatus (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:296:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:80:15\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertFunction (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:311:11)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test.assert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:201:21)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat localAssert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:159:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat fn (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:156:5)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.callback (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:902:3)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat IncomingMessage.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:1130:18)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Unzip.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;unzip.js\u001b[2m:54:12)\u001b[22m\u001b[2m\u001b[22m\n&quot;
+    },
+    {
+      &quot;leaks&quot;: false,
+      &quot;numFailingTests&quot;: 5,
+      &quot;numPassingTests&quot;: 0,
+      &quot;numPendingTests&quot;: 0,
+      &quot;numTodoTests&quot;: 0,
+      &quot;openHandles&quot;: [],
+      &quot;perfStats&quot;: {
+        &quot;end&quot;: 1631362131547,
+        &quot;runtime&quot;: 6981,
+        &quot;slow&quot;: true,
+        &quot;start&quot;: 1631362124566
+      },
+      &quot;skipped&quot;: false,
+      &quot;snapshot&quot;: {
+        &quot;added&quot;: 0,
+        &quot;fileDeleted&quot;: false,
+        &quot;matched&quot;: 0,
+        &quot;unchecked&quot;: 0,
+        &quot;unmatched&quot;: 0,
+        &quot;updated&quot;: 0,
+        &quot;uncheckedKeys&quot;: []
+      },
+      &quot;testFilePath&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js&quot;,
+      &quot;testResults&quot;: [
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;Test Suite for get request try&quot;
+          ],
+          &quot;duration&quot;: 1335,
+          &quot;failureDetails&quot;: [
+            {
+              &quot;actual&quot;: &quot;&quot;,
+              &quot;error&quot;: {},
+              &quot;expected&quot;: &quot;&quot;,
+              &quot;matcherName&quot;: &quot;&quot;,
+              &quot;message&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;&quot;,
+              &quot;passed&quot;: false,
+              &quot;stack&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:10:10)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+            }
+          ],
+          &quot;failureMessages&quot;: [
+            &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:10:10)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+          ],
+          &quot;fullName&quot;: &quot;Test Suite for get request try trying get request for general test&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;title&quot;: &quot;trying get request for general test&quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;post test suite&quot;
+          ],
+          &quot;duration&quot;: 1105,
+          &quot;failureDetails&quot;: [
+            {
+              &quot;actual&quot;: &quot;&quot;,
+              &quot;error&quot;: {},
+              &quot;expected&quot;: &quot;&quot;,
+              &quot;matcherName&quot;: &quot;&quot;,
+              &quot;message&quot;: &quot;Error: expected 201 \&quot;Created\&quot;, got 404 \&quot;Not Found\&quot;&quot;,
+              &quot;passed&quot;: false,
+              &quot;stack&quot;: &quot;Error: expected 201 \&quot;Created\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:38:14)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:93:5)\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+            }
+          ],
+          &quot;failureMessages&quot;: [
+            &quot;Error: expected 201 \&quot;Created\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:38:14)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:93:5)\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+          ],
+          &quot;fullName&quot;: &quot;post test suite post try&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;title&quot;: &quot;post try&quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;post test suite&quot;
+          ],
+          &quot;duration&quot;: 1214,
+          &quot;failureDetails&quot;: [
+            {
+              &quot;actual&quot;: &quot;&quot;,
+              &quot;error&quot;: {},
+              &quot;expected&quot;: &quot;&quot;,
+              &quot;matcherName&quot;: &quot;&quot;,
+              &quot;message&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;&quot;,
+              &quot;passed&quot;: false,
+              &quot;stack&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:50:15)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:93:5)\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+            }
+          ],
+          &quot;failureMessages&quot;: [
+            &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:50:15)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:93:5)\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+          ],
+          &quot;fullName&quot;: &quot;post test suite trying get request after post&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;title&quot;: &quot;trying get request after post&quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;put method check&quot;
+          ],
+          &quot;duration&quot;: 1022,
+          &quot;failureDetails&quot;: [
+            {
+              &quot;actual&quot;: &quot;&quot;,
+              &quot;error&quot;: {},
+              &quot;expected&quot;: &quot;&quot;,
+              &quot;matcherName&quot;: &quot;&quot;,
+              &quot;message&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;&quot;,
+              &quot;passed&quot;: false,
+              &quot;stack&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:78:10)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:93:5)\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+            }
+          ],
+          &quot;failureMessages&quot;: [
+            &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:78:10)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:93:5)\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+          ],
+          &quot;fullName&quot;: &quot;put method check put test&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;title&quot;: &quot;put test&quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;delete method check&quot;
+          ],
+          &quot;duration&quot;: 1020,
+          &quot;failureDetails&quot;: [
+            {
+              &quot;actual&quot;: &quot;&quot;,
+              &quot;error&quot;: {},
+              &quot;expected&quot;: &quot;&quot;,
+              &quot;matcherName&quot;: &quot;&quot;,
+              &quot;message&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;&quot;,
+              &quot;passed&quot;: false,
+              &quot;stack&quot;: &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:96:10)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:93:5)\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+            }
+          ],
+          &quot;failureMessages&quot;: [
+            &quot;Error: expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n    at Object.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\getTry.test.js:96:10)\n    at Object.asyncJestTest (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\jasmineAsyncInstall.js:106:37)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:45:12\n    at new Promise (&lt;anonymous&gt;)\n    at mapper (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:28:19)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-jasmine2\\build\\queueRunner.js:75:41\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:93:5)\n----\n    at Test.Object.&lt;anonymous&gt;.Test._assertStatus (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:296:12)\n    at C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:80:15\n    at Test.Object.&lt;anonymous&gt;.Test._assertFunction (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:311:11)\n    at Test.Object.&lt;anonymous&gt;.Test.assert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:201:21)\n    at localAssert (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:159:12)\n    at fn (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\supertest\\lib\\test.js:156:5)\n    at Test.callback (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:902:3)\n    at IncomingMessage.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\index.js:1130:18)\n    at Stream.emit (events.js:315:20)\n    at Unzip.&lt;anonymous&gt; (C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\superagent\\src\\node\\unzip.js:54:12)\n    at Unzip.emit (events.js:315:20)\n    at endReadableNT (internal&#x2F;streams&#x2F;readable.js:1327:12)\n    at processTicksAndRejections (internal&#x2F;process&#x2F;task_queues.js:80:21)&quot;
+          ],
+          &quot;fullName&quot;: &quot;delete method check delete test&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;failed&quot;,
+          &quot;title&quot;: &quot;delete test&quot;
+        }
+      ],
+      &quot;failureMessage&quot;: &quot;\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mTest Suite for get request try › trying get request for general test\u001b[39m\u001b[22m\n\n    expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m  8 |\u001b[39m     test(\u001b[32m&#39;trying get request for general test&#39;\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m&#x3D;&gt;\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m  9 |\u001b[39m        \u001b[36mawait\u001b[39m  request\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m&#x60;cars&#x60;\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m&gt;\u001b[22m\u001b[2m\u001b[39m\u001b[90m 10 |\u001b[39m         \u001b[33m.\u001b[39mexpect(\u001b[35m200\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 11 |\u001b[39m         \u001b[33m.\u001b[39mthen(res \u001b[33m&#x3D;&gt;\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 12 |\u001b[39m             console\u001b[33m.\u001b[39mlog(res\u001b[33m.\u001b[39mbody)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 13 |\u001b[39m         })\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.&lt;anonymous&gt; (\u001b[22m\u001b[2m\u001b[0m\u001b[36m__test__&#x2F;getTry.test.js\u001b[39m\u001b[0m\u001b[2m:10:10)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertStatus (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:296:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:80:15\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertFunction (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:311:11)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test.assert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:201:21)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat localAssert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:159:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat fn (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:156:5)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.callback (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:902:3)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat IncomingMessage.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:1130:18)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Unzip.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;unzip.js\u001b[2m:54:12)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mpost test suite › post try\u001b[39m\u001b[22m\n\n    expected 201 \&quot;Created\&quot;, got 404 \&quot;Not Found\&quot;\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 36 |\u001b[39m            \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mpost(\u001b[32m&#x60;cars&#x60;\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 37 |\u001b[39m             \u001b[33m.\u001b[39msend(carDetails)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m&gt;\u001b[22m\u001b[2m\u001b[39m\u001b[90m 38 |\u001b[39m             \u001b[33m.\u001b[39mexpect(\u001b[35m201\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m              \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 39 |\u001b[39m             \u001b[33m.\u001b[39mthen(\u001b[33mResponse\u001b[39m \u001b[33m&#x3D;&gt;\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 40 |\u001b[39m                 console\u001b[33m.\u001b[39mlog(\u001b[32m&#39;Header Date: &#39;\u001b[39m\u001b[33m,\u001b[39m \u001b[33mResponse\u001b[39m\u001b[33m.\u001b[39mheaders\u001b[33m.\u001b[39mdate)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 41 |\u001b[39m                 console\u001b[33m.\u001b[39mlog(\u001b[32m&#39;Header: &#39;\u001b[39m\u001b[33m,\u001b[39m \u001b[33mResponse\u001b[39m\u001b[33m.\u001b[39mheader)\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.&lt;anonymous&gt; (\u001b[22m\u001b[2m\u001b[0m\u001b[36m__test__&#x2F;getTry.test.js\u001b[39m\u001b[0m\u001b[2m:38:14)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertStatus (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:296:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:80:15\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertFunction (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:311:11)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test.assert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:201:21)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat localAssert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:159:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat fn (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:156:5)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.callback (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:902:3)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat IncomingMessage.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:1130:18)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Unzip.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;unzip.js\u001b[2m:54:12)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mpost test suite › trying get request after post\u001b[39m\u001b[22m\n\n    expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 48 |\u001b[39m             \u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 49 |\u001b[39m             \u001b[36mawait\u001b[39m  request\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m&#x60;cars&#x2F;${id}&#x60;\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m&gt;\u001b[22m\u001b[2m\u001b[39m\u001b[90m 50 |\u001b[39m              \u001b[33m.\u001b[39mexpect(\u001b[35m200\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m               \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 51 |\u001b[39m              \u001b[33m.\u001b[39mthen(res \u001b[33m&#x3D;&gt;\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 52 |\u001b[39m                  console\u001b[33m.\u001b[39mlog(res\u001b[33m.\u001b[39mbody)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 53 |\u001b[39m              })\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.&lt;anonymous&gt; (\u001b[22m\u001b[2m\u001b[0m\u001b[36m__test__&#x2F;getTry.test.js\u001b[39m\u001b[0m\u001b[2m:50:15)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertStatus (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:296:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:80:15\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertFunction (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:311:11)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test.assert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:201:21)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat localAssert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:159:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat fn (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:156:5)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.callback (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:902:3)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat IncomingMessage.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:1130:18)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Unzip.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;unzip.js\u001b[2m:54:12)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mput method check › put test\u001b[39m\u001b[22m\n\n    expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 76 |\u001b[39m         \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39mput(\u001b[32m&#x60;cars&#x2F;${id}&#x60;\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 77 |\u001b[39m         \u001b[33m.\u001b[39msend(putDetails)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m&gt;\u001b[22m\u001b[2m\u001b[39m\u001b[90m 78 |\u001b[39m         \u001b[33m.\u001b[39mexpect(\u001b[35m200\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 79 |\u001b[39m         \u001b[33m.\u001b[39mthen(res \u001b[33m&#x3D;&gt;\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 80 |\u001b[39m             console\u001b[33m.\u001b[39mlog(\u001b[32m&#39;Put response: &#39;\u001b[39m\u001b[33m,\u001b[39m res\u001b[33m.\u001b[39mbody)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 81 |\u001b[39m         })\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.&lt;anonymous&gt; (\u001b[22m\u001b[2m\u001b[0m\u001b[36m__test__&#x2F;getTry.test.js\u001b[39m\u001b[0m\u001b[2m:78:10)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertStatus (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:296:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:80:15\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertFunction (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:311:11)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test.assert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:201:21)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat localAssert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:159:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat fn (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:156:5)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.callback (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:902:3)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat IncomingMessage.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:1130:18)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Unzip.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;unzip.js\u001b[2m:54:12)\u001b[22m\u001b[2m\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mdelete method check › delete test\u001b[39m\u001b[22m\n\n    expected 200 \&quot;OK\&quot;, got 404 \&quot;Not Found\&quot;\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 94 |\u001b[39m         \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mrequest\u001b[33m.\u001b[39m\u001b[36mdelete\u001b[39m(\u001b[32m&#x60;cars&#x2F;${id}&#x60;\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 95 |\u001b[39m         \u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m&gt;\u001b[22m\u001b[2m\u001b[39m\u001b[90m 96 |\u001b[39m         \u001b[33m.\u001b[39mexpect(\u001b[35m200\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 97 |\u001b[39m         \u001b[33m.\u001b[39mthen(res \u001b[33m&#x3D;&gt;\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 98 |\u001b[39m             console\u001b[33m.\u001b[39mlog(\u001b[32m&#39;Put response: &#39;\u001b[39m\u001b[33m,\u001b[39m res\u001b[33m.\u001b[39mbody)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 99 |\u001b[39m         })\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.&lt;anonymous&gt; (\u001b[22m\u001b[2m\u001b[0m\u001b[36m__test__&#x2F;getTry.test.js\u001b[39m\u001b[0m\u001b[2m:96:10)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertStatus (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:296:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:80:15\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test._assertFunction (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:311:11)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.Object.&lt;anonymous&gt;.Test.assert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:201:21)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat localAssert (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:159:12)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat fn (\u001b[22m\u001b[2m\u001b[0m\u001b[36mnode_modules&#x2F;supertest&#x2F;lib&#x2F;test.js\u001b[39m\u001b[0m\u001b[2m:156:5)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.callback (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:902:3)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat IncomingMessage.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;index.js\u001b[2m:1130:18)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Unzip.&lt;anonymous&gt; (\u001b[22m\u001b[2mnode_modules&#x2F;superagent&#x2F;src&#x2F;node&#x2F;unzip.js\u001b[2m:54:12)\u001b[22m\u001b[2m\u001b[22m\n&quot;
+    },
+    {
+      &quot;leaks&quot;: false,
+      &quot;numFailingTests&quot;: 0,
+      &quot;numPassingTests&quot;: 2,
+      &quot;numPendingTests&quot;: 0,
+      &quot;numTodoTests&quot;: 0,
+      &quot;openHandles&quot;: [],
+      &quot;perfStats&quot;: {
+        &quot;end&quot;: 1631362135028,
+        &quot;runtime&quot;: 3078,
+        &quot;slow&quot;: false,
+        &quot;start&quot;: 1631362131950
+      },
+      &quot;skipped&quot;: false,
+      &quot;snapshot&quot;: {
+        &quot;added&quot;: 0,
+        &quot;fileDeleted&quot;: false,
+        &quot;matched&quot;: 0,
+        &quot;unchecked&quot;: 0,
+        &quot;unmatched&quot;: 0,
+        &quot;updated&quot;: 0,
+        &quot;uncheckedKeys&quot;: []
+      },
+      &quot;testFilePath&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\postAndGet.test.js&quot;,
+      &quot;testResults&quot;: [
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;POST request&quot;
+          ],
+          &quot;duration&quot;: 1316,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;POST request Create user data&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;passed&quot;,
+          &quot;title&quot;: &quot;Create user data&quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;GET all user details&quot;
+          ],
+          &quot;duration&quot;: 604,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;GET all user details GET user output&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;passed&quot;,
+          &quot;title&quot;: &quot;GET user output&quot;
+        }
+      ],
+      &quot;failureMessage&quot;: null
+    },
+    {
+      &quot;leaks&quot;: false,
+      &quot;numFailingTests&quot;: 0,
+      &quot;numPassingTests&quot;: 2,
+      &quot;numPendingTests&quot;: 0,
+      &quot;numTodoTests&quot;: 0,
+      &quot;openHandles&quot;: [],
+      &quot;perfStats&quot;: {
+        &quot;end&quot;: 1631362138577,
+        &quot;runtime&quot;: 3154,
+        &quot;slow&quot;: false,
+        &quot;start&quot;: 1631362135423
+      },
+      &quot;skipped&quot;: false,
+      &quot;snapshot&quot;: {
+        &quot;added&quot;: 0,
+        &quot;fileDeleted&quot;: false,
+        &quot;matched&quot;: 0,
+        &quot;unchecked&quot;: 0,
+        &quot;unmatched&quot;: 0,
+        &quot;updated&quot;: 0,
+        &quot;uncheckedKeys&quot;: []
+      },
+      &quot;testFilePath&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\putAndDelete.test.js&quot;,
+      &quot;testResults&quot;: [
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;PUT user details&quot;
+          ],
+          &quot;duration&quot;: 1235,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;PUT user details Update user now&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;passed&quot;,
+          &quot;title&quot;: &quot;Update user now&quot;
+        },
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;DELETE user details&quot;
+          ],
+          &quot;duration&quot;: 976,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;DELETE user details Delete request&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;passed&quot;,
+          &quot;title&quot;: &quot;Delete request&quot;
+        }
+      ],
+      &quot;failureMessage&quot;: null
+    },
+    {
+      &quot;leaks&quot;: false,
+      &quot;numFailingTests&quot;: 0,
+      &quot;numPassingTests&quot;: 1,
+      &quot;numPendingTests&quot;: 0,
+      &quot;numTodoTests&quot;: 0,
+      &quot;openHandles&quot;: [],
+      &quot;perfStats&quot;: {
+        &quot;end&quot;: 1631362140748,
+        &quot;runtime&quot;: 1974,
+        &quot;slow&quot;: false,
+        &quot;start&quot;: 1631362138774
+      },
+      &quot;skipped&quot;: false,
+      &quot;snapshot&quot;: {
+        &quot;added&quot;: 0,
+        &quot;fileDeleted&quot;: false,
+        &quot;matched&quot;: 0,
+        &quot;unchecked&quot;: 0,
+        &quot;unmatched&quot;: 0,
+        &quot;updated&quot;: 0,
+        &quot;uncheckedKeys&quot;: []
+      },
+      &quot;testFilePath&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\__test__\\trying.test.js&quot;,
+      &quot;testResults&quot;: [
+        {
+          &quot;ancestorTitles&quot;: [
+            &quot;reproduce test&quot;
+          ],
+          &quot;duration&quot;: 1195,
+          &quot;failureDetails&quot;: [],
+          &quot;failureMessages&quot;: [],
+          &quot;fullName&quot;: &quot;reproduce test get request&quot;,
+          &quot;location&quot;: null,
+          &quot;numPassingAsserts&quot;: 0,
+          &quot;status&quot;: &quot;passed&quot;,
+          &quot;title&quot;: &quot;get request&quot;
+        }
+      ],
+      &quot;failureMessage&quot;: null
+    }
+  ],
+  &quot;wasInterrupted&quot;: false,
+  &quot;coverageMap&quot;: {
+    &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\commonTests.js&quot;: {
+      &quot;path&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\commonTests.js&quot;,
+      &quot;statementMap&quot;: {
+        &quot;0&quot;: {
+          &quot;start&quot;: {
+            &quot;line&quot;: 1,
+            &quot;column&quot;: 16
+          },
+          &quot;end&quot;: {
+            &quot;line&quot;: 1,
+            &quot;column&quot;: 36
+          }
+        },
+        &quot;1&quot;: {
+          &quot;start&quot;: {
+            &quot;line&quot;: 2,
+            &quot;column&quot;: 17
+          },
+          &quot;end&quot;: {
+            &quot;line&quot;: 2,
+            &quot;column&quot;: 48
+          }
+        },
+        &quot;2&quot;: {
+          &quot;start&quot;: {
+            &quot;line&quot;: 16,
+            &quot;column&quot;: 0
+          },
+          &quot;end&quot;: {
+            &quot;line&quot;: 20,
+            &quot;column&quot;: 1
+          }
+        }
+      },
+      &quot;fnMap&quot;: {},
+      &quot;branchMap&quot;: {},
+      &quot;s&quot;: {
+        &quot;0&quot;: 5,
+        &quot;1&quot;: 5,
+        &quot;2&quot;: 5
+      },
+      &quot;f&quot;: {},
+      &quot;b&quot;: {},
+      &quot;_coverageSchema&quot;: &quot;1a1c01bbd47fc00a2c39e90264f33305004495a9&quot;,
+      &quot;hash&quot;: &quot;52f48ddd7476fc54e82a6c9e32265db05850f886&quot;
+    }
+  }
+}</div>
+        </div>
+        <div class="d-none" id="test-global-config">{
+  &quot;bail&quot;: 0,
+  &quot;changedFilesWithAncestor&quot;: false,
+  &quot;collectCoverage&quot;: true,
+  &quot;collectCoverageFrom&quot;: [],
+  &quot;coverageDirectory&quot;: &quot;C:\\home\\abc\\jest-supertest\\coverage\\my_reports&quot;,
+  &quot;coverageProvider&quot;: &quot;babel&quot;,
+  &quot;coverageReporters&quot;: [
+    &quot;html&quot;,
+    &quot;text&quot;
+  ],
+  &quot;coverageThreshold&quot;: {
+    &quot;global&quot;: {
+      &quot;branches&quot;: 100,
+      &quot;functions&quot;: 100,
+      &quot;lines&quot;: 100,
+      &quot;statements&quot;: 100
+    }
+  },
+  &quot;detectLeaks&quot;: false,
+  &quot;detectOpenHandles&quot;: true,
+  &quot;errorOnDeprecated&quot;: false,
+  &quot;expand&quot;: false,
+  &quot;findRelatedTests&quot;: false,
+  &quot;forceExit&quot;: false,
+  &quot;json&quot;: false,
+  &quot;lastCommit&quot;: false,
+  &quot;listTests&quot;: false,
+  &quot;logHeapUsage&quot;: false,
+  &quot;maxConcurrency&quot;: 5,
+  &quot;maxWorkers&quot;: 1,
+  &quot;noStackTrace&quot;: false,
+  &quot;nonFlagArgs&quot;: [],
+  &quot;notify&quot;: false,
+  &quot;notifyMode&quot;: &quot;failure-change&quot;,
+  &quot;onlyChanged&quot;: false,
+  &quot;onlyFailures&quot;: false,
+  &quot;passWithNoTests&quot;: false,
+  &quot;projects&quot;: [],
+  &quot;reporters&quot;: [
+    [
+      &quot;default&quot;,
+      {}
+    ],
+    [
+      &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\node_modules\\jest-stare\\lib\\index.js&quot;,
+      {}
+    ]
+  ],
+  &quot;rootDir&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp&quot;,
+  &quot;runTestsByPath&quot;: false,
+  &quot;skipFilter&quot;: false,
+  &quot;testFailureExitCode&quot;: 1,
+  &quot;testPathPattern&quot;: &quot;&quot;,
+  &quot;testSequencer&quot;: &quot;C:\\Users\\Ali Zain Abid\\Downloads\\nodeTemp\\testSequencer.js&quot;,
+  &quot;testTimeout&quot;: 60000,
+  &quot;updateSnapshot&quot;: &quot;new&quot;,
+  &quot;useStderr&quot;: false,
+  &quot;verbose&quot;: true,
+  &quot;watch&quot;: false,
+  &quot;watchAll&quot;: false,
+  &quot;watchman&quot;: true
+}</div>
+
+    </main>
+    <hr>
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">jest-stare 2020</span>
+        </div>
+    </footer>
+</body>
+
+</html>
+
