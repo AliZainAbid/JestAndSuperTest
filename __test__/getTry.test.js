@@ -6,7 +6,7 @@ describe('Test Suite for get request try', () => {
 try{
 
     test('trying get request for general test', async () => {
-       await  request.request.get(`cars`)
+       await  request.request.get(`api/users`)
         .expect(200)
         .then(res => {
             console.log(res.body)
@@ -25,15 +25,13 @@ describe('post test suite', () => {
     try{
 
      let   carDetails = {
-            "id": "3",
-            "name": "city new",
-            "company": "honda",
-            "model": "2017"
+            name: "morpheus",
+      job: "leader",
         };
-        let id = 3;
+        let id = 2;
 
         test('post try', async () => {
-           await request.request.post(`cars`)
+           await request.request.post(`api/users`)
             .send(carDetails)
             .expect(201)
             .then(Response => {
@@ -46,7 +44,7 @@ describe('post test suite', () => {
 
         test('trying get request after post', async () => {
             
-            await  request.request.get(`cars/${id}`)
+            await  request.request.get(`api/users/${id}`)
              .expect(200)
              .then(res => {
                  console.log(res.body)
@@ -65,15 +63,15 @@ describe('post test suite', () => {
 
 describe('put method check', () => {
 
-    let putDetails = {"id":"3",
-    "name": "Honda 3",
-    "company": "HondaA",
-    "model": "2012"};
+    let putDetails = {
+     "name": "morpheus",
+    "job": "zion resident"
+    };
 
     let id = 2;
 
     test('put test', async () => {
-        await request.request.put(`cars/${id}`)
+        await request.request.put(`api/users/${id}`)
         .send(putDetails)
         .expect(200)
         .then(res => {
@@ -91,9 +89,9 @@ describe('delete method check', () => {
     let id = 2;
 
     test('delete test', async () => {
-        await request.request.delete(`cars/${id}`)
+        await request.request.delete(`api/users/${id}`)
         
-        .expect(200)
+        .expect(204)
         .then(res => {
             console.log('Put response: ', res.body)
         })
