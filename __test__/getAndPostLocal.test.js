@@ -19,7 +19,7 @@ describe("GET all user details", () => {
   
         test("GET user output", async done =>{
 
-         await request.request.get(`cars`) //get() of supertest
+         await request.request.get(`api/users`) //get() of supertest
                                   //.set('Authorization', `Token ${request.token}`) 
                                   .expect(200)
                                   .then((response) =>{
