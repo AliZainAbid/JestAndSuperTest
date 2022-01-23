@@ -5,8 +5,8 @@
   "main": "index.js",
   "jest": {
     "verbose": true,
-    "testSequencer": "C:/Users\/Ali Zain Abid/Downloads/nodeTemp/testSequencer.js",
-    "coverageDirectory": "/home/abc/jest-supertest/coverage/my_reports/",
+    "testSequencer": "testSequencer.js",
+    "coverageDirectory": "coverage/my_reports/",
     "coverageReporters": [
       "html",
       "text"
