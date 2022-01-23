@@ -5,7 +5,7 @@
   "main": "index.js",
   "jest": {
     "verbose": true,
-    "testSequencer": "testSequencer.js",
+    "testSequencer": "./testSequencer.js",
     "coverageDirectory": "coverage/my_reports/",
     "coverageReporters": [
       "html",
